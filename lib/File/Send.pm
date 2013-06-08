@@ -2,6 +2,7 @@ package File::Send;
 use strict;
 use warnings;
 use Carp;
+use Errno 'EAGAIN';
 
 use Sub::Exporter::Progressive -setup => { exports => ['sendfile'], groups => { default => ['sendfile'] } };
 
@@ -15,7 +16,7 @@ my $backend = eval { require Sys::Sendfile; 'Sys::Sendfile' } || eval { require 
 if ($backend eq 'Sys::Sendfile') {
 	*sendfile = sub {
 		my $ret = Sys::Sendfile::sendfile(@_);
-		croak "Couldn't sendfile: $!" if not defined $ret;
+		croak "Couldn't sendfile: $!" if not defined $ret and $! != EAGAIN;
 		return $ret;
 	}
 }
@@ -26,7 +27,7 @@ elsif ($backend eq 'File::Map') {
 		$length ||= (-s $in) - $offset;
 		File::Map::map_handle(my $map, $in, '<', $offset, $length);
 		my $ret = syswrite $out, $map;
-		croak "Couldn't sendfile: $!" if not defined $ret;
+		croak "Couldn't sendfile: $!" if not defined $ret and $! != EAGAIN;
 		return $ret;
 	}
 }
