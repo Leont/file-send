@@ -24,16 +24,10 @@ elsif ($backend eq 'File::Map') {
 		my ($out, $in, $length) = @_;
 		my $offset = _systell $in;
 		$length ||= (-s $in) - $offset;
-		my $retval = 0;
 		File::Map::map_handle(my $map, $in, '<', $offset, $length);
-		while ($length) {
-			my $ret = syswrite $out, $map;
-			defined $retval ? return $retval : croak "Couldn't sendfile: $!" if not defined $ret;
-			$retval += $ret;
-			$offset += $ret;
-			$length -= $ret;
-		}
-		return $retval;
+		my $ret = syswrite $out, $map;
+		croak "Couldn't sendfile: $!" if not defined $ret;
+		return $ret;
 	}
 }
 else {

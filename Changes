@@ -2,6 +2,7 @@ Revision history for File-Send
 
 {{$NEXT}}
           Switch to Sub::Exporter::Progressive
+          Get rid of retry logic in fallback code
 
 0.001     2011-10-14 20:50:35 Europe/Amsterdam
     -
