@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Carp;
 
-use Sub::Exporter -setup => { exports => ['sendfile'], groups => { default => ['sendfile'] } };
+use Sub::Exporter::Progressive -setup => { exports => ['sendfile'], groups => { default => ['sendfile'] } };
 
 use Fcntl 'SEEK_CUR';
 sub _systell {
